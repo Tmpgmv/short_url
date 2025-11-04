@@ -23,7 +23,10 @@ public class RedirectController {
     @GetMapping("/s/{shortPath}")
     public ResponseEntity<?> redirectToFullUrl(@PathVariable String shortPath) {
         try {
+
             ShortUrl shortUrl = getShortUrl(shortPath);
+
+            incrementShortUrl(shortUrl);
 
             boolean limitExceeded = shortUrl.getRedirectLimit() == shortUrl.getAccessCount();
 
@@ -38,8 +41,6 @@ public class RedirectController {
             }
 
             String whereTo = selectFullUrl(shortUrl, shortPath);
-
-            incrementShortUrl(shortUrl);
 
             // Return 302 Redirect
             HttpHeaders headers = new HttpHeaders();
