@@ -13,14 +13,16 @@ import io.jmix.flowui.view.*;
 @LookupComponent("optionsDataGrid")
 @DialogMode(width = "64em")
 public class OptionListView extends StandardListView<Option> {
-  @ViewComponent private CollectionContainer<Option> optionsDc;
+    @ViewComponent
+    private CollectionContainer<Option> optionsDc;
 
-  @ViewComponent private Button createButton;
+    @ViewComponent
+    private Button createButton;
 
-  @Subscribe
-  public void onReady(final ReadyEvent event) {
-    // Hide or disable "Create" button if at least one Option exists
-    boolean optionExists = !optionsDc.getItems().isEmpty();
-    createButton.setVisible(!optionExists); // or setEnabled(!optionExists);
-  }
+    @Subscribe
+    public void onReady(final ReadyEvent event) {
+        // Hide or disable "Create" button if at least one Option exists
+        boolean optionExists = !optionsDc.getItems().isEmpty();
+        createButton.setVisible(!optionExists); // or setEnabled(!optionExists);
+    }
 }

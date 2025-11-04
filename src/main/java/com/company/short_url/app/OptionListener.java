@@ -9,13 +9,14 @@ import org.springframework.stereotype.Component;
 
 @Component("sh_OptionListener")
 public class OptionListener {
-  @Autowired private DataManager dataManager;
+    @Autowired
+    private DataManager dataManager;
 
-  @EventListener
-  public void onOptionListener(EntitySavingEvent<Option> event) {
-    long count = dataManager.load(Option.class).all().list().size();
-    if (count > 1) {
-      throw new IllegalStateException("There can be only one Option record.");
+    @EventListener
+    public void onOptionListener(EntitySavingEvent<Option> event) {
+        long count = dataManager.load(Option.class).all().list().size();
+        if (count > 1) {
+            throw new IllegalStateException("There can be only one Option record.");
+        }
     }
-  }
 }

@@ -7,170 +7,168 @@ import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.UUID;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.UUID;
+
 @JmixEntity
 @Table(
-    name = "SH_SHORT_URL",
-    indexes = {@Index(name = "IDX_SH_SHORT_URL_CREATED_BY", columnList = "CREATED_BY_ID")})
+        name = "SH_SHORT_URL",
+        indexes = {@Index(name = "IDX_SH_SHORT_URL_CREATED_BY", columnList = "CREATED_BY_ID")})
 @Entity(name = "sh_ShortUrl")
 public class ShortUrl {
 
-  @JmixGeneratedValue
-  @Column(name = "ID", nullable = false)
-  @Id
-  private UUID id;
+    @JmixGeneratedValue
+    @Column(name = "ID", nullable = false)
+    @Id
+    private UUID id;
 
-  @CreatedBy
-  @JoinColumn(name = "CREATED_BY_ID", nullable = false)
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  private User createdBy;
+    @CreatedBy
+    @JoinColumn(name = "CREATED_BY_ID", nullable = false)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private User createdBy;
 
-  @DeletedBy
-  @Column(name = "DELETED_BY")
-  private String deletedBy;
+    @DeletedBy
+    @Column(name = "DELETED_BY")
+    private String deletedBy;
 
-  @DeletedDate
-  @Temporal(TemporalType.DATE)
-  @Column(name = "DELETED_DATE")
-  private Date deletedDate;
+    @DeletedDate
+    @Temporal(TemporalType.DATE)
+    @Column(name = "DELETED_DATE")
+    private Date deletedDate;
 
-  @Column(name = "DEADLINE", nullable = false)
-  @NotNull
-  private Date deadline;
+    @Column(name = "DEADLINE", nullable = false)
+    @NotNull
+    private Date deadline;
+    @PositiveOrZero
+    @Column(name = "REDIRECT_LIMIT")
+    private Integer redirectLimit;
+    @Length(min = 3, max = 1024)
+    @Column(name = "SHORT_URL", nullable = false)
+    @Unique
+    private String shortUrl;
+    @CreatedDate
+    @Column(name = "CREATED_AT", nullable = false)
+    private LocalDateTime createdAt;
+    @PositiveOrZero
+    @Column(name = "ACCESS_COUNT", nullable = false)
+    private Integer accessCount = 0;
+    @Column(name = "COMMENT_")
+    @Lob
+    private String comment;
+    @URL(message = "Неверный URL")
+    @NotBlank
+    @NotEmpty
+    @Length(min = 3, max = 1024)
+    @Column(name = "ORIGINAL_URL", nullable = false)
+    @NotNull
+    private String originalUrl;
 
-  @PostConstruct
-  public void initDeadline(OptionCache optionCache) {
-    if (deadline == null && optionCache != null && optionCache.getOption() != null) {
-      this.deadline =
-          new Date(
-              System.currentTimeMillis() + optionCache.getOption().getLinkLifeTime() * 1000 * 60);
+    @PostConstruct
+    public void initDeadline(OptionCache optionCache) {
+        if (deadline == null && optionCache != null && optionCache.getOption() != null) {
+            this.deadline =
+                    new Date(
+                            System.currentTimeMillis() + optionCache.getOption().getLinkLifeTime() * 1000 * 60);
+        }
     }
-  }
 
-  @PositiveOrZero
-  @Column(name = "REDIRECT_LIMIT")
-  private Integer redirectLimit;
+    public User getCreatedBy() {
+        return createdBy;
+    }
 
-  @Length(min = 3, max = 1024)
-  @Column(name = "SHORT_URL", nullable = false)
-  @Unique
-  private String shortUrl;
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
 
-  @CreatedDate
-  @Column(name = "CREATED_AT", nullable = false)
-  private LocalDateTime createdAt;
+    public Date getDeadline() {
+        return deadline;
+    }
 
-  @PositiveOrZero
-  @Column(name = "ACCESS_COUNT", nullable = false)
-  private Integer accessCount = 0;
+    public void setDeadline(Date deadline) {
+        this.deadline = deadline;
+    }
 
-  @Column(name = "COMMENT_")
-  @Lob
-  private String comment;
+    public Integer getRedirectLimit() {
+        return redirectLimit;
+    }
 
-  @URL(message = "Неверный URL")
-  @NotBlank
-  @NotEmpty
-  @Length(min = 3, max = 1024)
-  @Column(name = "ORIGINAL_URL", nullable = false)
-  @NotNull
-  private String originalUrl;
+    public void setRedirectLimit(Integer redirectLimit) {
+        this.redirectLimit = redirectLimit;
+    }
 
-  public User getCreatedBy() {
-    return createdBy;
-  }
+    public String getComment() {
+        return comment;
+    }
 
-  public void setCreatedBy(User createdBy) {
-    this.createdBy = createdBy;
-  }
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-  public Date getDeadline() {
-    return deadline;
-  }
+    public Integer getAccessCount() {
+        return accessCount;
+    }
 
-  public void setDeadline(Date deadline) {
-    this.deadline = deadline;
-  }
+    public void setAccessCount(Integer accessCount) {
+        this.accessCount = accessCount;
+    }
 
-  public Integer getRedirectLimit() {
-    return redirectLimit;
-  }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-  public void setRedirectLimit(Integer redirectLimit) {
-    this.redirectLimit = redirectLimit;
-  }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
-  public String getComment() {
-    return comment;
-  }
+    public String getShortUrl() {
+        return shortUrl;
+    }
 
-  public void setComment(String comment) {
-    this.comment = comment;
-  }
+    public void setShortUrl(String shortUrl) {
+        this.shortUrl = shortUrl;
+    }
 
-  public Integer getAccessCount() {
-    return accessCount;
-  }
+    public UUID getId() {
+        return id;
+    }
 
-  public void setAccessCount(Integer accessCount) {
-    this.accessCount = accessCount;
-  }
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
+    public String getOriginalUrl() {
+        return originalUrl;
+    }
 
-  public String getShortUrl() {
-    return shortUrl;
-  }
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl;
+    }
 
-  public void setShortUrl(String shortUrl) {
-    this.shortUrl = shortUrl;
-  }
+    public String getDeletedBy() {
+        return deletedBy;
+    }
 
-  public UUID getId() {
-    return id;
-  }
+    public void setDeletedBy(String deletedBy) {
+        this.deletedBy = deletedBy;
+    }
 
-  public void setId(UUID id) {
-    this.id = id;
-  }
+    public Date getDeletedDate() {
+        return deletedDate;
+    }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public String getOriginalUrl() {
-    return originalUrl;
-  }
-
-  public void setOriginalUrl(String originalUrl) {
-    this.originalUrl = originalUrl;
-  }
-
-  public String getDeletedBy() {
-    return deletedBy;
-  }
-
-  public void setDeletedBy(String deletedBy) {
-    this.deletedBy = deletedBy;
-  }
-
-  public Date getDeletedDate() {
-    return deletedDate;
-  }
-
-  public void setDeletedDate(Date deletedDate) {
-    this.deletedDate = deletedDate;
-  }
+    public void setDeletedDate(Date deletedDate) {
+        this.deletedDate = deletedDate;
+    }
 }

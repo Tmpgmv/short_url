@@ -9,14 +9,14 @@ import io.jmix.security.role.annotation.ResourceRole;
 
 @ResourceRole(name = "Anonymous ShortUrl Role", code = AnonymousShortUrlRole.CODE, scope = "API")
 public interface AnonymousShortUrlRole {
-  String CODE = "anonymous-short-url-role";
+    String CODE = "anonymous-short-url-role";
 
-  @EntityAttributePolicy(
-      entityClass = ShortUrl.class,
-      attributes = "*",
-      action = EntityAttributePolicyAction.VIEW)
-  @EntityPolicy(
-      entityClass = ShortUrl.class,
-      actions = {EntityPolicyAction.READ, EntityPolicyAction.UPDATE})
-  void shortUrl();
+    @EntityAttributePolicy(
+            entityClass = ShortUrl.class,
+            attributes = "*",
+            action = EntityAttributePolicyAction.VIEW)
+    @EntityPolicy(
+            entityClass = ShortUrl.class,
+            actions = {EntityPolicyAction.READ, EntityPolicyAction.UPDATE})
+    void shortUrl();
 }

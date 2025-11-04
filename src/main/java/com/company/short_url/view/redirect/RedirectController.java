@@ -14,75 +14,75 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class RedirectController {
-  private final DataManager dataManager;
+    private final DataManager dataManager;
 
-  public RedirectController(DataManager dataManager, OptionCache optionCache) {
-    this.dataManager = dataManager;
-  }
-
-  @GetMapping("/s/{shortPath}")
-  public ResponseEntity<?> redirectToFullUrl(@PathVariable String shortPath) {
-    try {
-      ShortUrl shortUrl = getShortUrl(shortPath);
-
-      boolean limitExceeded = shortUrl.getRedirectLimit() == shortUrl.getAccessCount();
-
-      if (limitExceeded) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Limit of transfers exceeded");
-      }
-
-      boolean expired = shortUrl.getDeletedDate() != null;
-
-      if (expired) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Expired");
-      }
-
-      String whereTo = selectFullUrl(shortUrl, shortPath);
-
-      incrementShortUrl(shortUrl);
-
-      // Return 302 Redirect
-      HttpHeaders headers = new HttpHeaders();
-      headers.add("Location", whereTo);
-      return new ResponseEntity<>(headers, HttpStatus.FOUND);
-    } catch (NoResultException ex) {
-      // Custom status and message for not found/deleted
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Short link not found");
+    public RedirectController(DataManager dataManager, OptionCache optionCache) {
+        this.dataManager = dataManager;
     }
-  }
 
-  private void incrementShortUrl(ShortUrl shortUrl) {
-    int accessCount = shortUrl.getAccessCount();
-    shortUrl.setAccessCount(++accessCount);
-    dataManager.save(shortUrl);
-  }
+    @GetMapping("/s/{shortPath}")
+    public ResponseEntity<?> redirectToFullUrl(@PathVariable String shortPath) {
+        try {
+            ShortUrl shortUrl = getShortUrl(shortPath);
 
-  private ShortUrl getShortUrl(String shortPath) {
-    ShortUrl shortUrl =
-        dataManager
-            .load(ShortUrl.class)
-            .query("e.shortUrl=?1", shortPath)
-            .hint(PersistenceHints.SOFT_DELETION, false)
-            .one();
-    return shortUrl;
-  }
+            boolean limitExceeded = shortUrl.getRedirectLimit() == shortUrl.getAccessCount();
 
-  private String selectFullUrl(ShortUrl shortUrl, String shortPath) {
-    ShortUrl resultShortUrl = null;
+            if (limitExceeded) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Limit of transfers exceeded");
+            }
 
-    if (shortUrl.getRedirectLimit() != null) {
-      int redirectLimit = shortUrl.getRedirectLimit();
-      resultShortUrl =
-          dataManager
-              .load(ShortUrl.class)
-              .query(
-                  "e.shortUrl=?1 " + "and e.deletedDate is null and e.accessCount < ?2",
-                  shortPath,
-                  redirectLimit)
-              .one();
-    } else {
-      resultShortUrl = shortUrl;
+            boolean expired = shortUrl.getDeletedDate() != null;
+
+            if (expired) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Expired");
+            }
+
+            String whereTo = selectFullUrl(shortUrl, shortPath);
+
+            incrementShortUrl(shortUrl);
+
+            // Return 302 Redirect
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Location", whereTo);
+            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        } catch (NoResultException ex) {
+            // Custom status and message for not found/deleted
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Short link not found");
+        }
     }
-    return resultShortUrl.getOriginalUrl();
-  }
+
+    private void incrementShortUrl(ShortUrl shortUrl) {
+        int accessCount = shortUrl.getAccessCount();
+        shortUrl.setAccessCount(++accessCount);
+        dataManager.save(shortUrl);
+    }
+
+    private ShortUrl getShortUrl(String shortPath) {
+        ShortUrl shortUrl =
+                dataManager
+                        .load(ShortUrl.class)
+                        .query("e.shortUrl=?1", shortPath)
+                        .hint(PersistenceHints.SOFT_DELETION, false)
+                        .one();
+        return shortUrl;
+    }
+
+    private String selectFullUrl(ShortUrl shortUrl, String shortPath) {
+        ShortUrl resultShortUrl = null;
+
+        if (shortUrl.getRedirectLimit() != null) {
+            int redirectLimit = shortUrl.getRedirectLimit();
+            resultShortUrl =
+                    dataManager
+                            .load(ShortUrl.class)
+                            .query(
+                                    "e.shortUrl=?1 " + "and e.deletedDate is null and e.accessCount < ?2",
+                                    shortPath,
+                                    redirectLimit)
+                            .one();
+        } else {
+            resultShortUrl = shortUrl;
+        }
+        return resultShortUrl.getOriginalUrl();
+    }
 }
