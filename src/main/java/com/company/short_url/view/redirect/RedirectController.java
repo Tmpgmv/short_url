@@ -77,7 +77,7 @@ public class RedirectController {
                     dataManager
                             .load(ShortUrl.class)
                             .query(
-                                    "e.shortUrl=?1 " + "and e.deletedDate is null and e.accessCount < ?2",
+                                    "e.shortUrl=?1 and e.accessCount < ?2",
                                     shortPath,
                                     redirectLimit)
                             .one();
