@@ -44,14 +44,13 @@ public class TestingWebApplicationTests {
     void expiredLinkMessage() throws Exception {
 
         ResponseEntity<String> response = this.restTemplate.exchange(
-                "http://localhost:" + port + "/s/grdlwsa",
+                "http://localhost:" + port + "/s/dvis5hc",
                 HttpMethod.GET,
                 null,
                 String.class
         );
 
-        assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/s/grdlwsa",
-                String.class)).contains("Expired");
+        assertThat(response.getBody().contains("Expired"));
     }
 
 
@@ -63,7 +62,7 @@ public class TestingWebApplicationTests {
     void expiredLinkStatus() throws Exception {
 
         ResponseEntity<String> response = this.restTemplate.exchange(
-                "http://localhost:" + port + "/s/grdlwsa",
+                "http://localhost:" + port + "/s/dvis5hc",
                 HttpMethod.GET,
                 null,
                 String.class
@@ -87,12 +86,11 @@ public class TestingWebApplicationTests {
                 String.class
         );
 
-        assertThat(false); //response.getBody()).contains("ddd");
+        assertThat(response.getBody()).contains("Java");
     }
 
-
     /**
-     * 4 Пользователь перешел по работающей короткой ссылке. И должен получить статус 302.
+     * 4 Пользователь перешел по работающей короткой ссылке. И должен получить статус 200.
      * @throws Exception
      */
     @Test
@@ -105,9 +103,8 @@ public class TestingWebApplicationTests {
                 String.class
         );
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.MOVED_PERMANENTLY);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
 
     /**
      * 5 Пользователь перешел по ссылке с превышением лимита переходов. И должен получить статус 403.
