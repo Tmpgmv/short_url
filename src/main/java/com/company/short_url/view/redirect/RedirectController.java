@@ -28,11 +28,11 @@ public class RedirectController {
 
             boolean limitExceeded = shortUrl.getRedirectLimit() == shortUrl.getAccessCount();
 
-            incrementShortUrl(shortUrl);
-
             if (limitExceeded) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Limit of transfers exceeded");
             }
+
+            incrementShortUrl(shortUrl);
 
             boolean expired = shortUrl.getDeletedDate() != null;
 
