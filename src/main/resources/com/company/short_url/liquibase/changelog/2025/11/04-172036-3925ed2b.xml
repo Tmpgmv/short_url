@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="sh">
+        <addColumn tableName="SH_SHORT_URL">
+            <column name="CREATED_BY_ID" type="UUID"/>
+        </addColumn>
+
+        <addNotNullConstraint columnName="CREATED_BY_ID" tableName="SH_SHORT_URL"/>
+    </changeSet>
+    <changeSet id="2" author="sh">
+        <createIndex indexName="IDX_SH_SHORT_URL_CREATED_BY" tableName="SH_SHORT_URL">
+            <column name="CREATED_BY_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="CREATED_BY_ID" baseTableName="SH_SHORT_URL"
+                                 constraintName="FK_SH_SHORT_URL_ON_CREATED_BY" referencedColumnNames="ID"
+                                 referencedTableName="SH_USER"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menu-config xmlns="http://jmix.io/schema/flowui/menu">
+
+    <menu id="application" title="msg://com.company.short_url/menu.application.title" opened="true">
+        <item view="sh_User.list" title="msg://com.company.short_url.view.user/UserListView.title"/>
+        <item view="sh_ShortUrl.list" title="msg://com.company.short_url.view.shorturl/shortUrlListView.title"/>
+        <item view="sh_Option.list" title="msg://com.company.short_url.view.option/optionListView.title"/>
+    </menu>
+
+</menu-config>
