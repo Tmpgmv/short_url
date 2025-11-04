@@ -34,20 +34,7 @@ import org.springframework.security.web.SecurityFilterChain;
  *
  * @see io.jmix.securityflowui.security.FlowuiVaadinWebSecurity
  */
-// @Configuration
-// public class ShortUrlSecurityConfiguration {
-//
-//    @Bean
-//    @Order(JmixSecurityFilterChainOrder.CUSTOM)
-//    SecurityFilterChain publicFilterChain(HttpSecurity http) throws Exception {
-//        http.securityMatcher("/public/**")
-//                .authorizeHttpRequests(authorize ->
-//                        authorize.anyRequest().permitAll()
-//                );
-//
-//        return http.build();
-//    }
-// }
+
 
 @Configuration
 public class ShortUrlSecurityConfiguration {
