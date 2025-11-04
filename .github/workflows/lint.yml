@@ -16,7 +16,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: 'maven' # Cache Maven dependencies for faster builds
+          cache: 'gradle'
 
       - name: Run Checkstyle
         run: mvn checkstyle:check
