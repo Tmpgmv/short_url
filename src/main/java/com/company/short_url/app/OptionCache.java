@@ -8,20 +8,17 @@ import org.springframework.stereotype.Component;
 
 @Component("sh_OptionCache")
 public class OptionCache {
-    @Autowired
-    private DataManager dataManager;
+  @Autowired private DataManager dataManager;
 
-    private Option cachedOption;
+  private Option cachedOption;
 
-    @PostConstruct
-    public void init() {
-        // Assuming only one row in Option table
-        cachedOption = dataManager.load(Option.class)
-                .all()
-                .one();
-    }
+  @PostConstruct
+  public void init() {
+    // Assuming only one row in Option table
+    cachedOption = dataManager.load(Option.class).all().one();
+  }
 
-    public Option getOption() {
-        return cachedOption;
-    }
+  public Option getOption() {
+    return cachedOption;
+  }
 }

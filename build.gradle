@@ -2,6 +2,8 @@ plugins {
     id 'io.jmix' version '2.7.0'
     id 'java'
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.9'
+    id 'com.diffplug.spotless' version '6.25.0'
+    id 'checkstyle'
 }
 
 apply plugin: 'org.springframework.boot'
@@ -65,4 +67,15 @@ idea {
 
 vaadin {
     optimizeBundle = false
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
+}
+
+checkstyle {
+    toolVersion = '10.12.3'  // latest stable as of 2025
+    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
 }

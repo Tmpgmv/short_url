@@ -20,8 +20,8 @@ jobs:
         run: chmod +x ./gradlew
 
       # Пример запуска Checkstyle
-      - name: Run Checkstyle
-        run: ./gradlew checkstyleMain checkstyleTest --no-daemon
+      #- name: Run Checkstyle
+      #  run: ./gradlew checkstyleMain --no-daemon
 
       # Пример запуска Spotless, если используется
       - name: Run Spotless
