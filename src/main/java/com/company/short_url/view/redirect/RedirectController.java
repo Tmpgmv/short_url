@@ -26,9 +26,9 @@ public class RedirectController {
 
             ShortUrl shortUrl = getShortUrl(shortPath);
 
-            incrementShortUrl(shortUrl);
-
             boolean limitExceeded = shortUrl.getRedirectLimit() == shortUrl.getAccessCount();
+
+            incrementShortUrl(shortUrl);
 
             if (limitExceeded) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Limit of transfers exceeded");
