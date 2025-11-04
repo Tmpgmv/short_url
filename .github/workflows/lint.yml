@@ -22,7 +22,3 @@ jobs:
       # Пример запуска Checkstyle
       - name: Run Checkstyle
         run: ./gradlew checkstyleMain --no-daemon
-
-      # Пример запуска Spotless, если используется
-      - name: Run Spotless
-        run: ./gradlew spotlessCheck --no-daemon
