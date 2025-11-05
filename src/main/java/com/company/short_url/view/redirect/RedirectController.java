@@ -42,12 +42,10 @@ public class RedirectController {
 
             String whereTo = selectFullUrl(shortUrl, shortPath);
 
-            // Return 302 Redirect
             HttpHeaders headers = new HttpHeaders();
             headers.add("Location", whereTo);
             return new ResponseEntity<>(headers, HttpStatus.FOUND);
         } catch (NoResultException ex) {
-            // Custom status and message for not found/deleted
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Short link not found");
         }
     }
