@@ -6,9 +6,14 @@ import io.jmix.core.DataManager;
 import io.jmix.core.NoResultException;
 import io.jmix.core.UnconstrainedDataManager;
 import io.jmix.data.PersistenceHints;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import org.eclipse.persistence.config.QueryType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,9 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RedirectController {
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
   private final UnconstrainedDataManager dataManager;
 
-  public RedirectController(DataManager dataManager, OptionCache optionCache) {
+  public RedirectController(UnconstrainedDataManager dataManager, OptionCache optionCache) {
     this.dataManager = dataManager;
   }
 
@@ -56,24 +64,30 @@ public class RedirectController {
   }
 
   private ShortUrl getShortUrl(String shortPath) {
-    return dataManager
-        .load(ShortUrl.class)
-        .query("e.shortUrl = ?1", shortPath)
-        .hint(PersistenceHints.SOFT_DELETION, false)
-        .one();
+      Query query = entityManager.createNativeQuery(
+              "select * from SH_SHORT_URL where SHORT_URL = ?1", ShortUrl.class);
+      query.setParameter(1, shortPath);
+      ShortUrl result = (ShortUrl) query.getSingleResult();
+      return result;
   }
 
-  private String selectFullUrl(ShortUrl shortUrl, String shortPath) {
-    if (shortUrl.getRedirectLimit() != null) {
-      int redirectLimit = shortUrl.getRedirectLimit();
-      ShortUrl resultShortUrl =
-          dataManager
-              .load(ShortUrl.class)
-              .query("e.shortUrl = ?1 and e.accessCount <= ?2", shortPath, redirectLimit)
-              .one();
-      return resultShortUrl.getOriginalUrl();
-    } else {
-      return shortUrl.getOriginalUrl();
+
+    @Transactional
+    public String selectFullUrl(ShortUrl shortUrl, String shortPath) {
+        if (shortUrl.getRedirectLimit() != null) {
+            int redirectLimit = shortUrl.getRedirectLimit();
+            entityManager.setProperty(PersistenceHints.SOFT_DELETION, false); // to include soft-deleted rows if needed
+
+            ShortUrl resultShortUrl = (ShortUrl) entityManager
+                    .createNativeQuery(
+                            "select * from SH_SHORT_URL where SHORT_URL = ?1 and ACCESS_COUNT <= ?2", ShortUrl.class)
+                    .setParameter(1, shortPath)
+                    .setParameter(2, redirectLimit)
+                    .getSingleResult();
+
+            return resultShortUrl.getOriginalUrl();
+        } else {
+            return shortUrl.getOriginalUrl();
+        }
     }
-  }
 }

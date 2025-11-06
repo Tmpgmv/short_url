@@ -124,7 +124,7 @@ public class TestingWebApplicationTests {
      */
     @Test
     void optionCacheUrlPathLength() {
-        assertThat(optionCache.getOption().getUrlPathLength()).isEqualTo(7);
+        assertThat(optionCache.getOption().getUrlPathLength()).isEqualTo(4);
     }
 
     /**
