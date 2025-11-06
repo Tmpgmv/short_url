@@ -4,6 +4,7 @@ import com.company.short_url.app.OptionCache;
 import com.company.short_url.entity.ShortUrl;
 import io.jmix.core.DataManager;
 import io.jmix.core.NoResultException;
+import io.jmix.core.UnconstrainedDataManager;
 import io.jmix.data.PersistenceHints;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RedirectController {
 
-  private final DataManager dataManager;
+  private final UnconstrainedDataManager dataManager;
 
   public RedirectController(DataManager dataManager, OptionCache optionCache) {
     this.dataManager = dataManager;
