@@ -13,18 +13,18 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  */
 public class AuthenticatedAsAdmin implements BeforeEachCallback, AfterEachCallback {
 
-    @Override
-    public void beforeEach(ExtensionContext context) {
-        getSystemAuthenticator(context).begin("admin");
-    }
+  @Override
+  public void beforeEach(ExtensionContext context) {
+    getSystemAuthenticator(context).begin("admin");
+  }
 
-    @Override
-    public void afterEach(ExtensionContext context) {
-        getSystemAuthenticator(context).end();
-    }
+  @Override
+  public void afterEach(ExtensionContext context) {
+    getSystemAuthenticator(context).end();
+  }
 
-    private SystemAuthenticator getSystemAuthenticator(ExtensionContext context) {
-        ApplicationContext applicationContext = SpringExtension.getApplicationContext(context);
-        return applicationContext.getBean(SystemAuthenticator.class);
-    }
+  private SystemAuthenticator getSystemAuthenticator(ExtensionContext context) {
+    ApplicationContext applicationContext = SpringExtension.getApplicationContext(context);
+    return applicationContext.getBean(SystemAuthenticator.class);
+  }
 }

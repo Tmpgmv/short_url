@@ -5,6 +5,7 @@ import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
+import javax.sql.DataSource;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -18,8 +19,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import javax.sql.DataSource;
-
 @Push
 @Theme(value = "short_url")
 @PWA(name = "Short_url", shortName = "Short_url", offline = false)
@@ -27,34 +26,33 @@ import javax.sql.DataSource;
 @SpringBootApplication
 public class ShortUrlApplication implements AppShellConfigurator {
 
-    @Autowired
-    private Environment environment;
+  @Autowired private Environment environment;
 
-    public static void main(String[] args) {
-        SpringApplication.run(ShortUrlApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(ShortUrlApplication.class, args);
+  }
 
-    @Bean
-    @Primary
-    @ConfigurationProperties("main.datasource")
-    DataSourceProperties dataSourceProperties() {
-        return new DataSourceProperties();
-    }
+  @Bean
+  @Primary
+  @ConfigurationProperties("main.datasource")
+  DataSourceProperties dataSourceProperties() {
+    return new DataSourceProperties();
+  }
 
-    @Bean
-    @Primary
-    @ConfigurationProperties("main.datasource.hikari")
-    DataSource dataSource(final DataSourceProperties dataSourceProperties) {
-        return dataSourceProperties.initializeDataSourceBuilder().build();
-    }
+  @Bean
+  @Primary
+  @ConfigurationProperties("main.datasource.hikari")
+  DataSource dataSource(final DataSourceProperties dataSourceProperties) {
+    return dataSourceProperties.initializeDataSourceBuilder().build();
+  }
 
-    @EventListener
-    public void printApplicationUrl(final ApplicationStartedEvent event) {
-        LoggerFactory.getLogger(ShortUrlApplication.class)
-                .info(
-                        "Application started at "
-                                + "http://localhost:"
-                                + environment.getProperty("local.server.port")
-                                + Strings.nullToEmpty(environment.getProperty("server.servlet.context-path")));
-    }
+  @EventListener
+  public void printApplicationUrl(final ApplicationStartedEvent event) {
+    LoggerFactory.getLogger(ShortUrlApplication.class)
+        .info(
+            "Application started at "
+                + "http://localhost:"
+                + environment.getProperty("local.server.port")
+                + Strings.nullToEmpty(environment.getProperty("server.servlet.context-path")));
+  }
 }

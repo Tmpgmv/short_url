@@ -17,29 +17,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 @EditedEntityContainer("shortUrlDc")
 public class ShortUrlDetailView extends StandardDetailView<ShortUrl> {
 
-    @Autowired
-    private OptionCache optionCache;
+  @Autowired private OptionCache optionCache;
 
-    @ViewComponent
-    private Button copy;
+  @ViewComponent private Button copy;
 
-    @Subscribe(id = "copy", subject = "clickListener")
-    public void onCopyClick(final ClickEvent<JmixButton> event) {
-        ShortUrl entity = getEditedEntity(); // access the currently edited entity
-        String href =
-                String.format(
-                        "%s/s/%s",
-                        optionCache.getOption().getShortenerUrl(),
-                        entity.getShortUrl() // or any other property you need
-                );
+  @Subscribe(id = "copy", subject = "clickListener")
+  public void onCopyClick(final ClickEvent<JmixButton> event) {
+    ShortUrl entity = getEditedEntity(); // access the currently edited entity
+    String href =
+        String.format(
+            "%s/s/%s",
+            optionCache.getOption().getShortenerUrl(),
+            entity.getShortUrl() // or any other property you need
+            );
 
-        UiComponentUtils.copyToClipboard(href);
-    }
+    UiComponentUtils.copyToClipboard(href);
+  }
 
-    @Subscribe
-    public void onBeforeShow(BeforeShowEvent event) {
-        ShortUrl entity = getEditedEntity();
-        boolean isNew = entity.getCreatedAt() == null;
-        copy.setVisible(!isNew);
-    }
+  @Subscribe
+  public void onBeforeShow(BeforeShowEvent event) {
+    ShortUrl entity = getEditedEntity();
+    boolean isNew = entity.getCreatedAt() == null;
+    copy.setVisible(!isNew);
+  }
 }

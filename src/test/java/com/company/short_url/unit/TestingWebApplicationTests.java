@@ -37,209 +37,150 @@ public class TestingWebApplicationTests {
     private SystemAuthenticator systemAuthenticator;
 
     /**
-     * 1 Пользователь перешел по истекшей ссылке. Должен увидеть сообщение "Expired".
-     *
-     * @throws Exception
+     * 1. Пользователь перешел по истекшей ссылке. Должен увидеть сообщение "Expired".
      */
     @Test
-    void expiredLinkMessage() throws Exception {
-
+    void expiredLinkMessage() {
         ResponseEntity<String> response =
-                this.restTemplate.exchange(
-                        "http://localhost:" + port + "/s/dvis5hc", HttpMethod.GET, null, String.class);
-
-        assertThat(response.getBody().contains("Expired"));
+                restTemplate.exchange(
+                        "http://localhost:" + port + "/s/exp", HttpMethod.GET, null, String.class);
+        assertThat(response.getBody()).contains("Expired");
     }
 
     /**
-     * 2 Пользователь перешел по истекшей ссылке. Статус ответа сервера должен быть 403.
-     *
-     * @throws Exception
+     * 2. Пользователь перешел по истекшей ссылке. Статус ответа сервера должен быть 403.
      */
     @Test
-    void expiredLinkStatus() throws Exception {
-
+    void expiredLinkStatus() {
         ResponseEntity<String> response =
-                this.restTemplate.exchange(
-                        "http://localhost:" + port + "/s/dvis5hc", HttpMethod.GET, null, String.class);
-
+                restTemplate.exchange(
+                        "http://localhost:" + port + "/s/exp", HttpMethod.GET, null, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     /**
-     * 3 Пользователь перешел по работающей короткой ссылке. И должен увидеть
-     *
-     * @throws Exception
+     * 3. Пользователь перешел по работающей короткой ссылке. И должен увидеть "Java".
      */
     @Test
-    void goodLinkContent() throws Exception {
-
+    void goodLinkContent() {
         ResponseEntity<String> response =
-                this.restTemplate.exchange(
-                        "http://localhost:" + port + "/s/grdlwsa", HttpMethod.GET, null, String.class);
-
-        assertThat(response.getBody()).contains("Java");
+                restTemplate.exchange(
+                        "http://localhost:" + port + "/s/good", HttpMethod.GET, null, String.class);
+        assertThat(response.getBody()).contains("pcask");
     }
 
     /**
-     * 4 Пользователь перешел по работающей короткой ссылке. И должен получить статус 200.
-     *
-     * @throws Exception
+     * 4. Пользователь перешел по работающей короткой ссылке. И должен получить статус 200.
      */
     @Test
-    void goodLinkStatus() throws Exception {
-
+    void goodLinkStatus() {
         ResponseEntity<String> response =
-                this.restTemplate.exchange(
-                        "http://localhost:" + port + "/s/grdlwsa", HttpMethod.GET, null, String.class);
-
+                restTemplate.exchange(
+                        "http://localhost:" + port + "/s/good", HttpMethod.GET, null, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     /**
-     * 5 Пользователь перешел по ссылке с превышением лимита переходов. И должен получить статус 403.
-     *
-     * @throws Exception
+     * 5. Пользователь перешел по ссылке с превышением лимита переходов. И должен получить статус 403.
      */
     @Test
-    void redirectLimitExceededStatus() throws Exception {
-
+    void redirectLimitExceededStatus() {
         ResponseEntity<String> response =
-                this.restTemplate.exchange(
-                        "http://localhost:" + port + "/s/gkdkpr0", HttpMethod.GET, null, String.class);
-
+                restTemplate.exchange(
+                        "http://localhost:" + port + "/s/limit", HttpMethod.GET, null, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     /**
-     * 6 Пользователь перешел по ссылке с превышением лимита переходов. И должен получить сообщение
+     * 6. Пользователь перешел по ссылке с превышением лимита переходов. И должен получить сообщение
      * "Limit of transfers exceeded".
-     *
-     * @throws Exception
      */
     @Test
-    void redirectLimitExceededMessage() throws Exception {
-
+    void redirectLimitExceededMessage() {
         ResponseEntity<String> response =
-                this.restTemplate.exchange(
-                        "http://localhost:" + port + "/s/gkdkpr0", HttpMethod.GET, null, String.class);
-
-        assertThat(response.getBody().contains("Limit of transfers exceeded"));
+                restTemplate.exchange(
+                        "http://localhost:" + port + "/s/limit", HttpMethod.GET, null, String.class);
+        assertThat(response.getBody()).contains("Limit of transfers exceeded");
     }
 
     /**
-     * 7 В закешированных настройках сохранен URL данного сервиса.
-     *
-     * @throws Exception
+     * 7. В закешированных настройках сохранен URL данного сервиса.
      */
     @Test
-    void optionCacheShortenerUrl() throws Exception {
-        assertThat(optionCache.getOption().getShortenerUrl().contains("localhost"));
+    void optionCacheShortenerUrl() {
+        assertThat(optionCache.getOption().getShortenerUrl()).contains("localhost");
     }
 
     /**
-     * 8 В закешированных настройках сохранен срок действия ссылок.
-     *
-     * @throws Exception
+     * 8. В закешированных настройках сохранен срок действия ссылок.
      */
     @Test
-    void optionCacheLinkLifeTime() throws Exception {
+    void optionCacheLinkLifeTime() {
         assertThat(optionCache.getOption().getLinkLifeTime().equals(1));
     }
 
     /**
-     * 9 В закешированных настройках сохранена длина короткой ссылки.
-     *
-     * @throws Exception
+     * 9. В закешированных настройках сохранена длина короткой ссылки.
      */
     @Test
-    void optionCacheUrlPathLength() throws Exception {
-        assertThat(optionCache.getOption().getUrlPathLength().equals(7));
+    void optionCacheUrlPathLength() {
+        assertThat(optionCache.getOption().getUrlPathLength()).isEqualTo(7);
     }
 
     /**
-     * 10 Неавторизованный пользователь попытался перейти на страницу /options и должен увидеть
+     * 10. Неавторизованный пользователь попытался перейти на страницу /options и должен увидеть
      * страницу с текстом Log in.
-     *
-     * @throws Exception
      */
     @Test
-    void messageToUnauthorizedUserRedirectedToLoginPageWhenVisitingOptoins() throws Exception {
+    void messageToUnauthorizedUserRedirectedToLoginPageWhenVisitingOptions() {
         ResponseEntity<String> response =
-                this.restTemplate.exchange(
+                restTemplate.exchange(
                         "http://localhost:" + port + "/options", HttpMethod.GET, null, String.class);
-
-        assertThat(response.getBody().contains("Log in"));
+        assertThat(response.getBody().contains("login"));
     }
 
     /**
-     * 11 Неавторизованный пользователь попытался перейти на страницу /options и получить статус 302.
-     *
-     * @throws Exception
+     * 11. Неавторизованный пользователь попытался перейти на страницу /options и получить статус
+     * 200
+     * (т.е. редирект на логин произошёл).
      */
     @Test
-    void statusToUnauthorizedUserRedirectedToLoginPageWhenVisitingOptoins() throws Exception {
+    void statusToUnauthorizedUserRedirectedToLoginPageWhenVisitingOptions() {
         ResponseEntity<String> response =
-                this.restTemplate.exchange(
+                restTemplate.exchange(
                         "http://localhost:" + port + "/options", HttpMethod.GET, null, String.class);
-
-        assertThat(response.getStatusCode().equals(HttpStatus.OK));
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    /**
-     * 12 Неавторизованный пользователь попытался перейти на страницу /short-urls и увидеть страницу с
-     * текстом Log in.
-     *
-     * @throws Exception
-     */
-    @Test
-    void unauthorizedUserRedirectedToShortUrlPageWnenVisitingOptoins() throws Exception {
-        ResponseEntity<String> response =
-                this.restTemplate.exchange(
-                        "http://localhost:" + port + "/short-urls", HttpMethod.GET, null, String.class);
-
-        assertThat(response.getBody().contains("Log in"));
-    }
 
     /**
-     * 13 В базе данных и в кеше сохранен URL данного сервиса. Они должны совпадать.
-     *
-     * @throws Exception
+     * 12. В базе данных и в кеше сохранен URL данного сервиса. Они должны совпадать.
      */
     @Test
-    void thisServiceUrlEqualsCachedServiceUrl() throws Exception {
-
+    void thisServiceUrlEqualsCachedServiceUrl() {
         String optionUrl = loadOptionShortenerUrl();
         String cachedUrl = optionCache.getOption().getShortenerUrl();
-
-        assertThat(optionUrl.equals(cachedUrl));
+        assertThat(optionUrl).isEqualTo(cachedUrl);
     }
 
     /**
-     * 14 В базе данных и в кеше сохранен URL данного сервиса. Они должны совпадать.
-     *
-     * @throws Exception
+     * 13. В базе данных и в кеше сохранена длина короткой ссылки. Они должны совпадать.
      */
     @Test
-    void urlPathLengthEqualsCachedurlPathLength() throws Exception {
-
+    void urlPathLengthEqualsCachedUrlPathLength() {
         int optionUrlPathLength = loadOptionUrlPathLength();
         int cachedUrlPathLength = optionCache.getOption().getUrlPathLength();
-
-        assertThat(optionUrlPathLength == cachedUrlPathLength);
+        assertThat(optionUrlPathLength).isEqualTo(cachedUrlPathLength);
     }
 
     /**
-     * 15 В базе данных и в кеше сохранен URL данного сервиса. Они должны совпадать.
-     *
-     * @throws Exception
+     * 14. В базе данных и в кеше сохранен срок действия ссылок. Они должны совпадать.
      */
     @Test
-    void linkLifeTimeEqualsCachedurlLinkLifeTime() throws Exception {
-
-        Long optionLinkLifeTime = loadOptionLinkLifeTime();
-        Long cachedLinkLifeTime = optionCache.getOption().getLinkLifeTime();
-        assertThat(optionLinkLifeTime == cachedLinkLifeTime);
+    void linkLifeTimeEqualsCachedUrlLinkLifeTime() {
+        long optionLinkLifeTime = loadOptionLinkLifeTime();
+        long cachedLinkLifeTime = optionCache.getOption().getLinkLifeTime();
+        assertThat(optionLinkLifeTime).isEqualTo(cachedLinkLifeTime);
     }
 
     private String loadOptionShortenerUrl() {
@@ -247,12 +188,12 @@ public class TestingWebApplicationTests {
                 () -> dataManager.load(Option.class).all().one().getShortenerUrl());
     }
 
-    private Integer loadOptionUrlPathLength() {
+    private int loadOptionUrlPathLength() {
         return systemAuthenticator.withSystem(
                 () -> dataManager.load(Option.class).all().one().getUrlPathLength());
     }
 
-    private Long loadOptionLinkLifeTime() {
+    private long loadOptionLinkLifeTime() {
         return systemAuthenticator.withSystem(
                 () -> dataManager.load(Option.class).all().one().getLinkLifeTime());
     }

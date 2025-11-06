@@ -12,5 +12,4 @@ import io.jmix.flowui.view.ViewDescriptor;
 @ViewController(id = "sh_Option.detail")
 @ViewDescriptor(path = "option-detail-view.xml")
 @EditedEntityContainer("optionDc")
-public class OptionDetailView extends StandardDetailView<Option> {
-}
+public class OptionDetailView extends StandardDetailView<Option> {}

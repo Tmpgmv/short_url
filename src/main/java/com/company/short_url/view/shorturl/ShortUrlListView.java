@@ -10,5 +10,4 @@ import io.jmix.flowui.view.*;
 @ViewDescriptor(path = "short-url-list-view.xml")
 @LookupComponent("shortUrlsDataGrid")
 @DialogMode(width = "64em")
-public class ShortUrlListView extends StandardListView<ShortUrl> {
-}
+public class ShortUrlListView extends StandardListView<ShortUrl> {}
